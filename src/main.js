@@ -13,7 +13,7 @@ let gameOptions = {
     heroSpeed: 300,
 
     // platform speed, in pixels per second
-    platformSpeed: 190,
+    platformSpeed: -190,
 
     // platform length range, in pixels
     platformLengthRange: [50, 150],
