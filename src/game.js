@@ -51,8 +51,8 @@ class playGame extends Phaser.Scene {
         super("PlayGame");
     }
     preload() {
-        this.load.image("hero", "hero.png");
-        this.load.image("platform", "platform.png");
+        this.load.image("hero", "./assets/hero.png");
+        this.load.image("platform", "./assets/platform.png");
     }
     create() {
 
