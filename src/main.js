@@ -1,4 +1,5 @@
 let game;
+// test
 
 // global object where to store game options
 let gameOptions = {
