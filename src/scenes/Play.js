@@ -57,6 +57,8 @@ class Play extends Phaser.Scene {
         // set hero velocity according to input horizontal coordinate
         this.hero.setVelocityX(gameOptions.heroSpeed * ((e.x > game.config.width / 2) ? 1 : -1));
 
+        this.hero.setVelocityY(gameOptions.heroJump);
+
         // is it the first move?
         if(this.firstMove) {
 
