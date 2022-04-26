@@ -11,7 +11,7 @@ let gameOptions = {
     heroSpeed: 300,
 
     // hero speed, in pixels per second
-    heroJump: -400,
+    heroJump: -600,
 
     // platform speed, in pixels per second
     platformSpeed: -80,
@@ -20,10 +20,10 @@ let gameOptions = {
     platformLengthRange: [50, 150],
 
     // platform horizontal distance range from the center of the stage, in pixels
-    platformHorizontalDistanceRange: [0, 130],
+    platformHorizontalDistanceRange: [50, 130],
 
     // platform vertical distance range, in pixels
-    platformVerticalDistanceRange: [150, 180]
+    platformVerticalDistanceRange: [100,110]
 }
 
     // game configuration object

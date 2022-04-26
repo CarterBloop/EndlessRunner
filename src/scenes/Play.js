@@ -44,6 +44,7 @@ class Play extends Phaser.Scene {
 
         // we are waiting for player first move
         this.firstMove = true;
+
     }
 
     // method to return a random value between index 0 and 1 of a giver array
@@ -54,11 +55,20 @@ class Play extends Phaser.Scene {
     // method to move the hero
     moveHero(e) {
 
+        if(e.x > (game.config.width/2) + (game.config.width/5)) {
+            this.hero.setVelocityX(gameOptions.heroSpeed);
+        } else if(e.x < (game.config.width/2) - (game.config.width/5)) {
+            this.hero.setVelocityX(gameOptions.heroSpeed * -1);
+        } else {
+            this.hero.setVelocityX(0);
+        }
         // set hero velocity according to input horizontal coordinate
-        this.hero.setVelocityX(gameOptions.heroSpeed * ((e.x > game.config.width / 2) ? 1 : -1));
+        //this.hero.setVelocityX(gameOptions.heroSpeed * ((e.x > game.config.width / 2) ? 1 : -1));
 
-        this.hero.setVelocityY(gameOptions.heroJump);
-
+        if(this.hero.body.touching.down) {
+            this.hero.setVelocityY(gameOptions.heroJump);
+        }
+        
         // is it the first move?
         if(this.firstMove) {
 
