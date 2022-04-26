@@ -32,7 +32,7 @@ let gameOptions = {
         width: 640,
         height: 480,
         scene: [ Menu, Play ],
-        backgroundColor: 0x808080,
+        backgroundColor: 0xFFDEAD,
         physics: {
             default: 'arcade',
             arcade: {

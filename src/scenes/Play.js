@@ -5,9 +5,11 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.image("hero", "./assets/player1.png");
         this.load.image("platform", "./assets/platform.png");
+        this.load.image("cloud", "./assets/cloud.png");
     }
     create() {
 
+        this.cloud = this.add.tileSprite(0, 0, 640, 480, "cloud").setOrigin(0, 0);
         // creation of the physics group which will contain all platforms
         this.platformGroup = this.physics.add.group();
 
@@ -114,6 +116,7 @@ class Play extends Phaser.Scene {
     // method to be executed at each frame
     update(){
 
+        this.cloud.tilePositionY += 2;
         // handle collision between ball and platforms
         this.physics.world.collide(this.platformGroup, this.hero);
 
