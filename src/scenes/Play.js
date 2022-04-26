@@ -31,7 +31,7 @@ class Play extends Phaser.Scene {
         }
 
         // add the hero
-        this.hero = this.physics.add.sprite(game.config.width / 2, game.config.height - 80, "hero");
+        this.hero = this.physics.add.sprite(game.config.width / 2, 0, "hero");
 
         // set hero gravity
         this.hero.body.gravity.y = gameOptions.gameGravity;
