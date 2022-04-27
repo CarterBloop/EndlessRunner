@@ -3,9 +3,10 @@ class Play extends Phaser.Scene {
         super("PlayGame");
     }
     preload() {
-        this.load.image("hero", "./assets/player1.png");
+        //this.load.image("hero", "./assets/player1.png");
         this.load.image("platform", "./assets/platform.png");
         this.load.image("cloud", "./assets/cloud.png");
+        this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 1});
     }
     create() {
 
