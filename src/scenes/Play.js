@@ -10,39 +10,33 @@ class Play extends Phaser.Scene {
     create() {
 
         this.cloud = this.add.tileSprite(0, 0, 640, 480, "cloud").setOrigin(0, 0);
-        // creation of the physics group which will contain all platforms
+        
+        // platform physics group
         this.platformGroup = this.physics.add.group();
 
         // create starting platform
         let platform = this.platformGroup.create(game.config.width / 2, game.config.height - 40, "platform");
-
-        // platform won't physically react to collisions
         platform.setImmovable(true);
 
-        // we are going to create 3 more platforms which we'll reuse to save resources
-        for(let i = 0; i < 3; i ++) {
-
-            // platform creation, as a member of platformGroup physics group
+        // create platforms
+        for(let i = 0; i < 4; i ++) {
             let platform = this.platformGroup.create(640, 480, "platform");
-
-            // platform won't physically react to collisions
             platform.setImmovable(true);
-
-            // position the platform
             this.positionPlatform(platform)
         }
 
         // add the hero
-        this.hero = this.physics.add.sprite(game.config.width / 2, 0, "hero");
+        this.hero = this.physics.add.sprite(game.config.width / 2, game.config.height - 90, "hero");
 
         // set hero gravity
         this.hero.body.gravity.y = gameOptions.gameGravity;
 
-        // input listener to move the hero
-        this.input.on("pointerdown", this.moveHero, this);
+        // set the appropriate keys
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
-        // input listener to stop the hero
-        this.input.on("pointerup", this.stopHero, this);
+        // player jump on space
+        this.input.keyboard.on("keydown-SPACE", this.moveHero, this);
 
         // we are waiting for player first move
         this.firstMove = true;
@@ -73,11 +67,7 @@ class Play extends Phaser.Scene {
         
         // is it the first move?
         if(this.firstMove) {
-
-            // it's no longer the first move
             this.firstMove = false;
-
-            // move platform group
             this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
         }
     }
@@ -113,11 +103,21 @@ class Play extends Phaser.Scene {
         platform.displayWidth = this.randomValue(gameOptions.platformLengthRange);
     }
 
-    // method to be executed at each frame
+
     update(){
 
-        this.cloud.tilePositionY += 2;
-        // handle collision between ball and platforms
+        this.cloud.tilePositionY -= 2;
+
+        // right and left movement for player
+        if (keyLEFT.isDown && this.hero.x >= 0) {
+            this.hero.setVelocityX(-gameOptions.heroSpeed);
+        } else if (keyRIGHT.isDown && this.hero.x <= game.config.width) {
+            this.hero.setVelocityX(gameOptions.heroSpeed);
+        } else {
+            this.stopHero(this.hero);
+        }
+        
+        // handle collision between player and platforms
         this.physics.world.collide(this.platformGroup, this.hero);
 
         // loop through all platforms
@@ -128,13 +128,12 @@ class Play extends Phaser.Scene {
 
                 // ... recycle the platform
                 this.positionPlatform(platform);
+                platform.y = 0; // platforms spawn at the top
             }
         }, this);
 
-        // if the hero falls down or leaves the stage from the top...
-        if(this.hero.y > game.config.height || this.hero.y < 0) {
-
-            // restart the scene
+        // restart scene if player falls and die
+        if(this.hero.y > game.config.height) {
             this.scene.start("PlayGame");
         }
     }
