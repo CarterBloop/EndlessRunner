@@ -6,7 +6,7 @@ class Play extends Phaser.Scene {
         //this.load.image("hero", "./assets/player1.png");
         this.load.image("platform", "./assets/platform.png");
         this.load.image("cloud", "./assets/cloud.png");
-        this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
     }
     create() {
 
@@ -28,6 +28,11 @@ class Play extends Phaser.Scene {
 
         // add the hero
         this.hero = this.physics.add.sprite(game.config.width / 2, game.config.height - 90, "hero");
+        this.anims.create({
+            key: 'jumping',
+            frames: this.anims.generateFrameNumbers('hero', {start: 1, end: 0, first: 1}),
+            frameRate: 8
+        });
 
         // set hero gravity
         this.hero.body.gravity.y = gameOptions.gameGravity;
@@ -37,7 +42,10 @@ class Play extends Phaser.Scene {
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
         // player jump on space
-        this.input.keyboard.on("keydown-SPACE", this.moveHero, this);
+        this.input.keyboard.on("keydown-SPACE", () => {
+            this.moveHero(this.hero);
+            this.hero.anims.play('jumping');
+        }, this);
 
         // we are waiting for player first move
         this.firstMove = true;
@@ -117,7 +125,7 @@ class Play extends Phaser.Scene {
         } else {
             this.stopHero(this.hero);
         }
-        
+
         // handle collision between player and platforms
         this.physics.world.collide(this.platformGroup, this.hero);
 
