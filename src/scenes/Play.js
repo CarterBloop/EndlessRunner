@@ -5,7 +5,7 @@ class Play extends Phaser.Scene {
     preload() {
         //this.load.image("hero", "./assets/player1.png");
         this.load.image("platform", "./assets/platform.png");
-        this.load.image("cloud", "./assets/cloud.png");
+        this.load.image("cloud", "./assets/stars.png");
         this.load.image("skyscraper", "./assets/skyscraper.png");
         this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
         this.load.image("window", "./assets/window.png");
@@ -57,6 +57,7 @@ class Play extends Phaser.Scene {
 
         // we are waiting for player first move
         this.firstMove = true;
+        this.gameOver = false;
     }
 
     // method to return a random value between index 0 and 1 of a giver array
