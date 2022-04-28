@@ -6,11 +6,13 @@ class Play extends Phaser.Scene {
         //this.load.image("hero", "./assets/player1.png");
         this.load.image("platform", "./assets/platform.png");
         this.load.image("cloud", "./assets/cloud.png");
+        this.load.image("skyscraper", "./assets/skyscraper.png");
         this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
     }
     create() {
 
         this.cloud = this.add.tileSprite(0, 0, 640, 480, "cloud").setOrigin(0, 0);
+        this.skyscraper = this.add.sprite(115, 0, "skyscraper").setOrigin(0,0);
         
         // platform physics group
         this.platformGroup = this.physics.add.group();
