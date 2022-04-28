@@ -17,13 +17,13 @@ let gameOptions = {
     platformSpeed: -80,
 
     // platform length range, in pixels
-    platformLengthRange: [50, 150],
+    platformLengthRange: [60, 120],
 
     // platform horizontal distance range from the center of the stage, in pixels
-    platformHorizontalDistanceRange: [50, 130],
+    platformHorizontalDistanceRange: [110, 130],
 
     // platform vertical distance range, in pixels
-    platformVerticalDistanceRange: [100,110]
+    platformVerticalDistanceRange: [130,150]
 }
 
     // game configuration object
@@ -43,6 +43,7 @@ let gameOptions = {
     let game = new Phaser.Game(config);
     let borderUISize = game.config.height / 15;
     let borderPadding = borderUISize / 3;
+    let platformToggle = -1;
 
 // reserve keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT;

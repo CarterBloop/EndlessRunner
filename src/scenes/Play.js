@@ -22,7 +22,7 @@ class Play extends Phaser.Scene {
         platform.setImmovable(true);
 
         // create platforms
-        for(let i = 0; i < 4; i ++) {
+        for(let i = 0; i < 3; i ++) {
             let platform = this.platformGroup.create(640, 480, "platform");
             platform.setImmovable(true);
             this.positionPlatform(platform)
@@ -51,6 +51,8 @@ class Play extends Phaser.Scene {
 
         // we are waiting for player first move
         this.firstMove = true;
+
+        
 
     }
 
@@ -107,8 +109,13 @@ class Play extends Phaser.Scene {
         // vertical position
         platform.y = this.getHighestPlatform() - this.randomValue(gameOptions.platformVerticalDistanceRange);
 
+        // Platform Toggle
+        platformToggle = platformToggle * -1;
+
         // horizontal position
-        platform.x = game.config.width / 2 + this.randomValue(gameOptions.platformHorizontalDistanceRange) * Phaser.Math.RND.sign();
+        platform.x = game.config.width / 2 + this.randomValue(gameOptions.platformHorizontalDistanceRange) * platformToggle;
+
+
 
         // platform width
         platform.displayWidth = this.randomValue(gameOptions.platformLengthRange);
