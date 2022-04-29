@@ -169,7 +169,8 @@ class Play extends Phaser.Scene {
 
         // restart scene if player falls and die
         if(this.hero.y > game.config.height) {
-            this.scene.start("PlayGame");
+            //this.scene.start("PlayGame");
+            this.scene.restart();
         }
     }
 }

@@ -11,10 +11,10 @@ class Menu extends Phaser.Scene {
     create() {
         // menu text configuration
         let menuConfig = {
-            fontFamily: 'Georgia',
-            fontSize: '38px',
+            fontFamily: 'Impact',
+            fontSize: '35px',
             //backgroundColor: '#000000',
-            color: '#0000FF',
+            color: '#00FFFF',
             align: 'right',
             padding: {
                 top: 5,
@@ -25,11 +25,9 @@ class Menu extends Phaser.Scene {
         // show menu text
         this.add.image(450, 150, 'background');
         this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'WELCOME TO THE LOUD QUIET', menuConfig).setOrigin(0.5);
-        //this.add.text(game.config.width/2, game.config.height/2, 'P1 rides with ←→ arrows & (F) to fire', menuConfig).setOrigin(0.5);
-        //this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'P2 drags the mouse', menuConfig).setOrigin(0.5);
-        //menuConfig.backgroundColor = '#00FF00';
-        //menuConfig.color = '#000';
-        //this.add.text(game.config.width/2, game.config.height/2 + borderUISize *2 + borderUISize*2 , 'Press ← for Farmhand or → for Cowboy', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2, 'Use <--> to control player movement', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Use SPACE KEY to control player jump', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderUISize*2 , 'Press <- or -> arrow to start', menuConfig).setOrigin(0.5);
   
         // define keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -38,11 +36,9 @@ class Menu extends Phaser.Scene {
   
     update() {
         if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
-          // Novice mode
           this.scene.start("PlayGame");    
         }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
-          // Expert mode
           this.scene.start("PlayGame");    
         }
       }
