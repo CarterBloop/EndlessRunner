@@ -31,7 +31,7 @@ let gameOptions = {
         type: Phaser.CANVAS,
         width: 640,
         height: 480,
-        scene: [ Menu, Play ],
+        scene: [ Menu, Play, GameOver],
         backgroundColor: 0xFFDEAD,
         physics: {
             default: 'arcade',
@@ -47,4 +47,4 @@ let gameOptions = {
     let direction = 1;
 
 // reserve keyboard variables
-let keyUP, keyDOWN, keyLEFT, keyRIGHT;
+let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyM;

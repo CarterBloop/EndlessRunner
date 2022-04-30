@@ -3,7 +3,7 @@ class Play extends Phaser.Scene {
         super("PlayGame");
     }
     preload() {
-        //this.load.image("hero", "./assets/player1.png");
+        // load assets
         this.load.image("platform", "./assets/platform.png");
         this.load.image("cloud", "./assets/stars.png");
         this.load.image("skyscraper", "./assets/skyscraper.png");
@@ -48,6 +48,8 @@ class Play extends Phaser.Scene {
         // set the appropriate keys
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+        keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        keyM = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
 
         // player jump on space
         this.input.keyboard.on("keydown-SPACE", () => {
@@ -57,7 +59,6 @@ class Play extends Phaser.Scene {
 
         // we are waiting for player first move
         this.firstMove = true;
-        this.gameOver = false;
     }
 
     // method to return a random value between index 0 and 1 of a giver array
@@ -129,7 +130,6 @@ class Play extends Phaser.Scene {
         window.displayWidth = platform_length;
     }
 
-
     update(){
 
         this.cloud.tilePositionY -= 2;
@@ -169,8 +169,7 @@ class Play extends Phaser.Scene {
 
         // restart scene if player falls and die
         if(this.hero.y > game.config.height) {
-            //this.scene.start("PlayGame");
-            this.scene.restart();
+            this.scene.start("gameOver");
         }
     }
 }
