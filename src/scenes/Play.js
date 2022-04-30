@@ -38,7 +38,7 @@ class Play extends Phaser.Scene {
         this.anims.create({
             key: 'jumping',
             frames: this.anims.generateFrameNumbers('hero', {start: 1, end: 0, first: 1}),
-            frameRate: 8
+            frameRate: 4
         });
 
         // set hero gravity
