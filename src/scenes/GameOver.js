@@ -9,7 +9,7 @@ class GameOver extends Phaser.Scene {
 
     create () {
 
-        this.add.image(0, 0, 'cloud').setOrigin(0,0);
+        this.cloud = this.add.tileSprite(0, 0, 640, 480, "cloud").setOrigin(0, 0);
 
         // menu text configuration
         let menuConfig = {
@@ -38,5 +38,7 @@ class GameOver extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(keyM)) {
             this.scene.start("menuScene");
         }
+
+        this.cloud.tilePositionY -= 2;
     }
 }
