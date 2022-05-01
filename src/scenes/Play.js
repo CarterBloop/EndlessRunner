@@ -269,6 +269,8 @@ class Play extends Phaser.Scene {
         if(this.hero.y > game.config.height) {
             this.scene.start("gameOver");
         }
+
+        // Game camera follow player
         if(this.hero.y < game.config.height/20) {
             this.hero.body.gravity.y = gameOptions.gameGravity * 5;
         }
