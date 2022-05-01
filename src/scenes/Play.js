@@ -60,6 +60,10 @@ class Play extends Phaser.Scene {
             loop: true,
             callback: () => {
                 this.heroScore += 5;
+                gameOptions.platformSpeed += gameOptions.platformAcceleration;
+                this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
+                this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
+                this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
             }
         });
 
@@ -245,6 +249,33 @@ class Play extends Phaser.Scene {
         // restart scene if player falls and die
         if(this.hero.y > game.config.height) {
             this.scene.start("gameOver");
+        }
+        if(this.hero.y < game.config.height/20) {
+            this.hero.body.gravity.y = gameOptions.gameGravity * 5;
+        }
+        if(this.hero.y < game.config.height / 6) {
+            this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 2);
+            this.windowGroup.setVelocityY(-gameOptions.platformSpeed* 2);
+            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed* 2);
+            this.hero.body.gravity.y = gameOptions.gameGravity * 1.5;
+        } else if(this.hero.y < game.config.height / 5){
+            this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
+            this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
+            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
+            this.hero.body.gravity.y = gameOptions.gameGravity * 1.2;
+        } else if(this.hero.y < game.config.height / 4) {
+            this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
+            this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
+            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
+            this.hero.body.gravity.y = gameOptions.gameGravity * 1.1;
+        } else if(this.hero.y < game.config.height / 3) {
+            this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
+            this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
+            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
+        } else {
+            this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
+            this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
+            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
         }
     }
 }

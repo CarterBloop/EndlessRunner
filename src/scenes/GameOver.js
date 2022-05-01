@@ -29,6 +29,8 @@ class GameOver extends Phaser.Scene {
         // keys
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyM = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M);
+
+        gameOptions.platformSpeed = -80;
     }
 
     update () {
