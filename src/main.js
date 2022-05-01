@@ -29,7 +29,10 @@ let gameOptions = {
     platformVerticalDistanceRange: [130,150],
 
     // chance of getting a powerup
-    powerUpChance: [1, 10]
+    powerUpChance: [1, 10],
+
+    // chance of getting hit by bomb
+    badItemChance: [1, 13]
 }
 
     // game configuration object

@@ -220,7 +220,7 @@ class Play extends Phaser.Scene {
             blow.setImmovable(true);
         }
 
-        if (this.randomValue(gameOptions.powerUpChance) == 3 && this.firstMove == false) {
+        if (this.randomValue(gameOptions.badItemChance) == 3 && this.firstMove == false) {
             let bomb = this.physics.add.sprite(game.config.width / 2, 0, "bomb").setOrigin(0.0);
             this.badGroup.add(bomb);
             bomb.setImmovable(true);
