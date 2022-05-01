@@ -23,7 +23,10 @@ let gameOptions = {
     platformHorizontalDistanceRange: [110, 130],
 
     // platform vertical distance range, in pixels
-    platformVerticalDistanceRange: [130,150]
+    platformVerticalDistanceRange: [130,150],
+
+    // chance of getting a powerup
+    powerUpChance: [1, 10]
 }
 
     // game configuration object

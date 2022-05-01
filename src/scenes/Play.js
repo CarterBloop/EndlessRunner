@@ -9,6 +9,7 @@ class Play extends Phaser.Scene {
         this.load.image("skyscraper", "./assets/skyscraper.png");
         this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
         this.load.image("window", "./assets/window.png");
+        this.load.spritesheet("greenSound", "./assets/goodSound.png", {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 4});
     }
     create() {
 
@@ -18,12 +19,36 @@ class Play extends Phaser.Scene {
         // platform physics group
         this.platformGroup = this.physics.add.group();
         
+        // windows group
         this.windowGroup = this.physics.add.group();
+
+        // sound group
+        this.goodSoundGroup = this.physics.add.group();
+
+        // add the hero
+        this.hero = this.physics.add.sprite(game.config.width / 2, game.config.height - 90, "hero");
+        // hero animation
+        this.anims.create({
+            key: 'jumping',
+            frames: this.anims.generateFrameNumbers('hero', {start: 1, end: 0, first: 1}),
+            frameRate: 4
+        });
+        // is hero floating?
+        this.hero.floating = false;
 
         // create starting platform
         let platform = this.platformGroup.create(game.config.width / 2, game.config.height - 40, "platform");
+        // starting window
         this.windowGroup.create(game.config.width / 2, platform.y - 55, "window");
         platform.setImmovable(true);
+
+        // green sound animation
+        this.anims.create({
+            key: 'sound',
+            frames: this.anims.generateFrameNumbers("greenSound", {start: 0, end: 4, first: 0}),
+            frameRate: 8,
+            repeat: -1
+        });
 
         // create platforms
         for(let i = 0; i < 3; i ++) {
@@ -32,14 +57,6 @@ class Play extends Phaser.Scene {
             platform.setImmovable(true);
             this.positionPlatform(platform, window);
         }
-
-        // add the hero
-        this.hero = this.physics.add.sprite(game.config.width / 2, game.config.height - 90, "hero");
-        this.anims.create({
-            key: 'jumping',
-            frames: this.anims.generateFrameNumbers('hero', {start: 1, end: 0, first: 1}),
-            frameRate: 4
-        });
 
         // set hero gravity
         this.hero.body.gravity.y = gameOptions.gameGravity;
@@ -88,13 +105,12 @@ class Play extends Phaser.Scene {
             this.firstMove = false;
             this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
             this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
+            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
         }
     }
 
     // method to stop the hero
     stopHero() {
-
-        // ... just stop the hero :)
         this.hero.setVelocityX(0);
     }
 
@@ -128,11 +144,39 @@ class Play extends Phaser.Scene {
         let platform_length = this.randomValue(gameOptions.platformLengthRange);
         platform.displayWidth = platform_length;
         window.displayWidth = platform_length;
+
+        if (this.randomValue(gameOptions.powerUpChance) == 1) {
+            let boom = this.physics.add.sprite(platform.x + (120*platformToggle), 0, "greenSound").setOrigin(0.0);
+            this.goodSoundGroup.add(boom);
+            boom.anims.play('sound');
+            if (this.firstMove == false) { // spawn from the top
+                boom.y = -64;
+                boom.setVelocityY(-gameOptions.platformSpeed);
+            } else {
+                boom.y = platform.y - 64;
+            }
+            boom.setImmovable(true);
+        }
     }
 
     update(){
 
         this.cloud.tilePositionY -= 2;
+
+        if (this.hero.floating == false) {
+            this.physics.world.collide(this.goodSoundGroup, this.hero, () => {
+                this.hero.floating = true;
+                this.hero.body.gravity.y = 0;
+                this.hero.setVelocityY(gameOptions.heroJump / 5);
+                // floats for 2 seconds
+                this.time.delayedCall(2000, () => {
+                    this.hero.floating = false;
+                    this.hero.body.gravity.y = gameOptions.gameGravity;
+                    this.hero.setVelocityY(0);
+                }, null, this);
+            });
+        }
+
 
         // right and left movement for player
         if (keyLEFT.isDown && this.hero.x >= 0) {
@@ -144,7 +188,9 @@ class Play extends Phaser.Scene {
         }
 
         // handle collision between player and platforms
-        this.physics.world.collide(this.platformGroup, this.hero);
+        if (this.hero.floating == false) {
+            this.physics.world.collide(this.platformGroup, this.hero);
+        }
 
         this.windowGroup.getChildren().forEach(function(window) {
             if (window.getBounds().top > game.config.height && window.active) {
