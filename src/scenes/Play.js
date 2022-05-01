@@ -10,7 +10,8 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
         this.load.image("window", "./assets/window.png");
         this.load.spritesheet("greenSound", "./assets/goodSound.png", {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 4});
-        this.load.spritesheet("wind", "./assets/wind.png", {frameWidth: 1200, frameHeight: 100, startFrame: 0, endFrame: 100});
+        this.load.spritesheet("wind", "./assets/wind.png", {frameWidth: 100, frameHeight: 100, startFrame: 0, endFrame: 100});
+        
 
     }
     create() {
@@ -75,6 +76,12 @@ class Play extends Phaser.Scene {
             key: 'sound',
             frames: this.anims.generateFrameNumbers("greenSound", {start: 0, end: 4, first: 0}),
             frameRate: 8,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'wind',
+            frames: this.anims.generateFrameNumbers("wind", {start: 0, end: 100, first: 0}),
+            frameRate: 12,
             repeat: -1
         });
 
@@ -184,6 +191,18 @@ class Play extends Phaser.Scene {
                 boom.y = platform.y - 64;
             }
             boom.setImmovable(true);
+        }
+        if (this.randomValue(gameOptions.powerUpChance) == 1) {
+            let blow = this.physics.add.sprite(platform.x + (65 * platformToggle), 0, "wind").setOrigin(0.0);
+            this.goodSoundGroup.add(blow);
+            blow.anims.play('wind');
+            if (this.firstMove == false) { // spawn from the top
+                blow.y = -64;
+                blow.setVelocityY(-gameOptions.platformSpeed);
+            } else {
+                blow.y = platform.y - 64;
+            }
+            blow.setImmovable(true);
         }
     }
 
