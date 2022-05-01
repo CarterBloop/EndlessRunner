@@ -60,16 +60,23 @@ class Play extends Phaser.Scene {
         }
         this.scoreConfig = scoreConfig;
 
-        // Update score after 5 sceonds of gameplay
+        // Update score 
         this.scoreUpdateTimer = this.time.addEvent({
             paused: true,
             delay: 100,
             loop: true,
             callback: () => {
                 this.heroScore -= 1;
-                if (Math.floor(this.scoreUpdateTimer.elapsed / 1000) % 5 == 0) { // every 5 seconds
-                    gameOptions.platformSpeed += gameOptions.platformAcceleration;
-                }
+            }
+        });
+
+        // Accelerate platforms every 5 seconds
+        this.platformUpdate = this.time.addEvent({
+            paused: true,
+            delay: 5000,
+            loop: true,
+            callback: () => {
+                gameOptions.platformSpeed += gameOptions.platformAcceleration;
                 this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
                 this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
                 this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
@@ -228,6 +235,7 @@ class Play extends Phaser.Scene {
 
         if (this.firstMove == false) {
             this.scoreUpdateTimer.paused = false;
+            this.platformUpdate.paused = false;
         }
         
         if (this.hero.floating == false) {
