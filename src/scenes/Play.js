@@ -36,6 +36,23 @@ class Play extends Phaser.Scene {
         // is hero floating?
         this.hero.floating = false;
 
+        this.heroScore = 0;
+
+        let scoreConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5
+            },
+            fixedWidth: 100
+        }
+        this.scoreConfig = scoreConfig;
+
+        this.scoreDisplay = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.heroScore, scoreConfig);
         // create starting platform
         let platform = this.platformGroup.create(game.config.width / 2, game.config.height - 40, "platform");
         // starting window
@@ -146,7 +163,7 @@ class Play extends Phaser.Scene {
         window.displayWidth = platform_length;
 
         if (this.randomValue(gameOptions.powerUpChance) == 1) {
-            let boom = this.physics.add.sprite(platform.x + (120*platformToggle), 0, "greenSound").setOrigin(0.0);
+            let boom = this.physics.add.sprite(platform.x + (65 * platformToggle), 0, "greenSound").setOrigin(0.0);
             this.goodSoundGroup.add(boom);
             boom.anims.play('sound');
             if (this.firstMove == false) { // spawn from the top
@@ -162,6 +179,7 @@ class Play extends Phaser.Scene {
     update(){
 
         this.cloud.tilePositionY -= 2;
+        timer += 1;
 
         if (this.hero.floating == false) {
             this.physics.world.collide(this.goodSoundGroup, this.hero, () => {
@@ -191,6 +209,16 @@ class Play extends Phaser.Scene {
         if (this.hero.floating == false) {
             this.physics.world.collide(this.platformGroup, this.hero);
         }
+
+        // Score tracking
+        //if (this.hero.floating == false){
+            //this.physics.world.collide(this.platformGroup, this.hero, () => {
+            if(this.firstMove == false){
+                this.heroScore += 1;
+                this.scoreDisplay.text = this.heroScore;   
+            }     
+           // });
+       // }
 
         this.windowGroup.getChildren().forEach(function(window) {
             if (window.getBounds().top > game.config.height && window.active) {
