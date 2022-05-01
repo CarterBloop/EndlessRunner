@@ -52,7 +52,16 @@ class Play extends Phaser.Scene {
         }
         this.scoreConfig = scoreConfig;
 
-        this.scoreDisplay = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.heroScore, scoreConfig);
+        // Update score after 5 sceonds of gameplat
+        this.scoreUpdateTimer = this.time.addEvent({
+            delay: 5 * 1000,
+            loop: true,
+            callback: () => {
+                this.heroScore += 5;
+            }
+        });
+
+        this.scoreDisplay = this.add.text(borderUISize + borderPadding - 15, borderUISize + borderPadding * 2, this.heroScore, scoreConfig);
         // create starting platform
         let platform = this.platformGroup.create(game.config.width / 2, game.config.height - 40, "platform");
         // starting window
@@ -179,8 +188,8 @@ class Play extends Phaser.Scene {
     update(){
 
         this.cloud.tilePositionY -= 2;
-        timer += 1;
-
+        this.scoreDisplay.text = this.heroScore;
+        
         if (this.hero.floating == false) {
             this.physics.world.collide(this.goodSoundGroup, this.hero, () => {
                 this.hero.floating = true;
@@ -208,18 +217,8 @@ class Play extends Phaser.Scene {
         // handle collision between player and platforms
         if (this.hero.floating == false) {
             this.physics.world.collide(this.platformGroup, this.hero);
-        }
-
-        // Score tracking
-        //if (this.hero.floating == false){
-            //this.physics.world.collide(this.platformGroup, this.hero, () => {
-            if(this.firstMove == false){
-                this.heroScore += 1;
-                this.scoreDisplay.text = this.heroScore;   
-            }     
-           // });
-       // }
-
+        }   
+    
         this.windowGroup.getChildren().forEach(function(window) {
             if (window.getBounds().top > game.config.height && window.active) {
                 window.active = false; // set window child as false

@@ -47,7 +47,6 @@ let gameOptions = {
     let borderUISize = game.config.height / 15;
     let borderPadding = borderUISize / 3;
     let platformToggle = -1;
-    let timer = 0;
 
 // reserve keyboard variables
 let keyUP, keyDOWN, keyLEFT, keyRIGHT, keyR, keyM;
