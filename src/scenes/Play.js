@@ -11,8 +11,7 @@ class Play extends Phaser.Scene {
         this.load.image("window", "./assets/window.png");
         this.load.spritesheet("greenSound", "./assets/goodSound.png", {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 4});
         this.load.spritesheet("wind", "./assets/wind.png", {frameWidth: 100, frameHeight: 100, startFrame: 0, endFrame: 13});
-        
-
+        this.load.image("bomb", "./assets/ball2.png");
     }
     create() {
 
@@ -27,6 +26,9 @@ class Play extends Phaser.Scene {
 
         // sound group
         this.goodSoundGroup = this.physics.add.group();
+
+        // bad item group
+        this.badGroup = this.physics.add.group();
 
         // add the hero
         this.hero = this.physics.add.sprite(game.config.width / 2, game.config.height - 90, "hero");
@@ -90,7 +92,7 @@ class Play extends Phaser.Scene {
         });
         this.anims.create({
             key: 'wind',
-            frames: this.anims.generateFrameNumbers("wind", {start: 0, end: 100, first: 0}),
+            frames: this.anims.generateFrameNumbers("wind", {start: 0, end: 13, first: 0}),
             frameRate: 12,
             repeat: -1
         });
@@ -135,8 +137,6 @@ class Play extends Phaser.Scene {
         } else {
             this.hero.setVelocityX(0);
         }
-        // set hero velocity according to input horizontal coordinate
-        //this.hero.setVelocityX(gameOptions.heroSpeed * ((e.x > game.config.width / 2) ? 1 : -1));
 
         if(this.hero.body.touching.down) {
             this.hero.setVelocityY(gameOptions.heroJump);
@@ -148,6 +148,7 @@ class Play extends Phaser.Scene {
             this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
             this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
             this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
+            this.badGroup.setVelocityY(-gameOptions.platformSpeed);
         }
     }
 
@@ -199,7 +200,7 @@ class Play extends Phaser.Scene {
             }
             boom.setImmovable(true);
         }
-        if (this.randomValue(gameOptions.powerUpChance) == 1) {
+        if (this.randomValue(gameOptions.powerUpChance) == 2) {
             let blow = this.physics.add.sprite(platform.x + (65 * platformToggle), 0, "wind").setOrigin(0.0);
             this.goodSoundGroup.add(blow);
             blow.anims.play('wind');
@@ -210,6 +211,13 @@ class Play extends Phaser.Scene {
                 blow.y = platform.y - 64;
             }
             blow.setImmovable(true);
+        }
+
+        if (this.randomValue(gameOptions.powerUpChance) == 3 && this.firstMove == false) {
+            let bomb = this.physics.add.sprite(game.config.width / 2, 0, "bomb").setOrigin(0.0);
+            this.badGroup.add(bomb);
+            bomb.setImmovable(true);
+            bomb.setVelocityY(-gameOptions.platformSpeed * 6);
         }
     }
 
@@ -237,6 +245,12 @@ class Play extends Phaser.Scene {
             });
         }
 
+        this.physics.world.collide(this.badGroup, this.hero, () => {
+            this.hero.floating = true;
+            this.stopHero(this.hero);
+            this.hero.setVelocityY(gameOptions.gameGravity / 2);
+        });
+
 
         // right and left movement for player
         if (keyLEFT.isDown && this.hero.x >= 0) {
@@ -258,14 +272,11 @@ class Play extends Phaser.Scene {
             }
         });
 
-        // loop through all platforms
+        // recyle platforms and windows
         this.platformGroup.getChildren().forEach(function(platform) {
-            // if a platform leaves the stage to the upper side...
             if(platform.getBounds().top > game.config.height) {
                 let window = this.windowGroup.getFirstDead(true, 100, 100, "window", 0, true);
                 window.active = true;
-                //let window = this.physics.add.sprite(0, 0, "window");
-                // ... recycle the platform
                 this.positionPlatform(platform, window);
                 platform.y = -1; // platforms spawn at the top
                 window.y = platform.y - 56;
