@@ -10,6 +10,8 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
         this.load.image("window", "./assets/window.png");
         this.load.spritesheet("greenSound", "./assets/goodSound.png", {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 4});
+        this.load.spritesheet("wind", "./assets/wind.png", {frameWidth: 1200, frameHeight: 100, startFrame: 0, endFrame: 100});
+
     }
     create() {
 
