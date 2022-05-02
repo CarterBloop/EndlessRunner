@@ -8,7 +8,7 @@ class Play extends Phaser.Scene {
         this.load.image("cloud", "./assets/stars.png");
         this.load.image("skyscraper", "./assets/skyscraper.png");
         //this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('hero', './assets/player.png', {frameWidth: 274, frameHeight: 484, startFrame: 0, endFrame: 274});
+        this.load.spritesheet('hero', './assets/player_jump.png', {frameWidth: 274, frameHeight: 484, startFrame: 0, endFrame: 274});
 
         this.load.image("window", "./assets/window.png");
         this.load.spritesheet("greenSound", "./assets/goodSound.png", {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 4});
@@ -42,7 +42,7 @@ class Play extends Phaser.Scene {
         this.anims.create({
             key: 'jumping',
             frames: this.anims.generateFrameNumbers('hero', {start: 1, end: 0, first: 1}),
-            frameRate: 4
+            frameRate: 2
         });
         // is hero floating?
         this.hero.floating = false;
@@ -131,7 +131,7 @@ class Play extends Phaser.Scene {
         // player jump on space
         this.input.keyboard.on("keydown-SPACE", () => {
             this.moveHero(this.hero);
-            //this.hero.anims.play('jumping');
+            this.hero.anims.play('jumping');
         }, this);
 
         this.jump = this.sound.add('jump', { loop: false });
