@@ -1,7 +1,7 @@
 # EndlessRunner
 Names: Grant Bosworth, Nelson Pham, Ernani Raffo, John Lynch <br>
 Game Name: The Loud Quiet <br>
-Date Completed: May 1, 2022
+Date Completed: May 1, 2022 <br>
 We decided to go with a vertical endless runner type platform game where the player
 climbs up a skyscraper with platforms by it as windowsills and they have to avoid
 certain obstacles like bombs falling here and there or the winds blowing them down
@@ -12,5 +12,5 @@ have sound effects for when the player collides with the powerups and the wind a
 jumping animation as well. All powerups, bombs, and wind effects are all animation created by 
 us and it will spawn at random times during the game. Platforms will accelerate faster as you
 get to the top of the skyscraper.
-
+<br>
 https://carterbloop.github.io/EndlessRunner/
