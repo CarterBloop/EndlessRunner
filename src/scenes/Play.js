@@ -16,6 +16,7 @@ class Play extends Phaser.Scene {
         this.load.image("bomb", "./assets/ball2.png");
         this.load.audio('jump', ["./assets/Jump.wav"]);
         this.load.audio('boost', ["./assets/Boost.wav"]);
+        this.load.audio('background', ["./assets/background.wav"]);
     }
     create() {
 
@@ -140,6 +141,8 @@ class Play extends Phaser.Scene {
 
         this.jump = this.sound.add('jump', { loop: false });
         this.boost = this.sound.add('boost', { loop: false });
+        this.background = this.sound.add('background', { loop: true });
+        this.background.play();
     }
 
     // method to return a random value between index 0 and 1 of a giver array
@@ -259,7 +262,7 @@ class Play extends Phaser.Scene {
                 this.hero.body.gravity.y = 0;
                 this.hero.setVelocityY(gameOptions.heroJump / 5);
                 // floats for 2 seconds
-                //this.boost.play();
+                this.boost.play();
                 this.time.delayedCall(2000, () => {
                     this.hero.floating = false;
                     this.hero.body.gravity.y = gameOptions.gameGravity;
@@ -328,6 +331,7 @@ class Play extends Phaser.Scene {
         // restart scene if player falls and die
         if(this.hero.y > game.config.height) {
             this.scene.start("gameOver");
+            this.background.stop();
         }
 
         // Game camera follow player
