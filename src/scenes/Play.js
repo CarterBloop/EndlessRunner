@@ -273,15 +273,15 @@ class Play extends Phaser.Scene {
             });
         }
     
-        this.physics.world.collide(this.windGroup, this.hero, () => {
+        this.physics.world.overlap(this.windGroup, this.hero, () => {
                 this.stopHero(this.hero);
-                this.hero.x -=(50);
+                //this.hero.x -=(50);
                 this.hero.setVelocityX(-5000);
                 this.hero.body.gravity.x = -5000;
 
-                this.time.delayedCall(2000, () => {
+                this.time.delayedCall(1000, () => {
                     //this.physics.world.collide(this.platformGroup, this.hero);
-                    this.hero.setVelocityX(0);
+                    //this.hero.setVelocityX(0);
                     this.hero.body.gravity.x = 0;
                 }, null, this);
         });
@@ -348,6 +348,7 @@ class Play extends Phaser.Scene {
                 this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 2);
                 this.windowGroup.setVelocityY(-gameOptions.platformSpeed* 2);
                 this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed* 2);
+                this.windGroup.setVelocityY(-gameOptions.platformSpeed* 2);
                 if (this.hero.floating == false) {
                     this.hero.body.gravity.y = gameOptions.gameGravity * 1.5;
                 }
@@ -355,6 +356,7 @@ class Play extends Phaser.Scene {
                 this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
                 this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
                 this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
+                this.windGroup.setVelocityY(-gameOptions.platformSpeed* 1.5);
                 if (this.hero.floating == false) {
                     this.hero.body.gravity.y = gameOptions.gameGravity * 1.2;
                 }
@@ -362,6 +364,7 @@ class Play extends Phaser.Scene {
                 this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
                 this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
                 this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
+                this.windGroup.setVelocityY(-gameOptions.platformSpeed* 1.25);
                 if (this.hero.floating == false) {
                     this.hero.body.gravity.y = gameOptions.gameGravity * 1.1;
                 }
@@ -369,10 +372,12 @@ class Play extends Phaser.Scene {
                 this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
                 this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
                 this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
+                this.windGroup.setVelocityY(-gameOptions.platformSpeed* 1.1);
             } else {
                 this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
                 this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
                 this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
+                this.windGroup.setVelocityY(-gameOptions.platformSpeed);
             }
         }   
     }
