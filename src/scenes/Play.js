@@ -31,6 +31,8 @@ class Play extends Phaser.Scene {
         // sound group
         this.goodSoundGroup = this.physics.add.group();
 
+        this.windGroup = this.physics.add.group();
+
         // bad item group
         this.badGroup = this.physics.add.group();
 
@@ -86,6 +88,8 @@ class Play extends Phaser.Scene {
                 this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
                 this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
                 this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
+                this.windGroup.setVelocityY(-gameOptions.platformSpeed);
+
             }
         });
 
@@ -165,6 +169,7 @@ class Play extends Phaser.Scene {
             this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
             this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
             this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
+            this.windGroup.setVelocityY(-gameOptions.platformSpeed);
             this.badGroup.setVelocityY(-gameOptions.platformSpeed);
         }
     }
@@ -219,7 +224,7 @@ class Play extends Phaser.Scene {
         }
         if (this.randomValue(gameOptions.powerUpChance) == 2) {
             let blow = this.physics.add.sprite(platform.x + (65 * platformToggle), 0, "wind").setOrigin(0.0);
-            this.goodSoundGroup.add(blow);
+            this.windGroup.add(blow);
             blow.anims.play('wind');
             if (this.firstMove == false) { // spawn from the top
                 blow.y = -64;
@@ -254,7 +259,7 @@ class Play extends Phaser.Scene {
                 this.hero.body.gravity.y = 0;
                 this.hero.setVelocityY(gameOptions.heroJump / 5);
                 // floats for 2 seconds
-                this.boost.play();
+                //this.boost.play();
                 this.time.delayedCall(2000, () => {
                     this.hero.floating = false;
                     this.hero.body.gravity.y = gameOptions.gameGravity;
@@ -263,6 +268,20 @@ class Play extends Phaser.Scene {
                 }, null, this);
             });
         }
+    
+        this.physics.world.collide(this.windGroup, this.hero, () => {
+                this.stopHero(this.hero);
+                this.hero.x -=(50);
+                this.hero.setVelocityX(-5000);
+                this.hero.body.gravity.x = -5000;
+
+                this.time.delayedCall(2000, () => {
+                    //this.physics.world.collide(this.platformGroup, this.hero);
+                    this.hero.setVelocityX(0);
+                    this.hero.body.gravity.x = 0;
+                }, null, this);
+        });
+        
 
         this.physics.world.collide(this.badGroup, this.hero, () => {
             this.hero.floating = true;
