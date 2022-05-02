@@ -250,6 +250,7 @@ class Play extends Phaser.Scene {
                 this.hero.body.gravity.y = 0;
                 this.hero.setVelocityY(gameOptions.heroJump / 5);
                 // floats for 2 seconds
+                this.boost.play();
                 this.time.delayedCall(2000, () => {
                     this.hero.floating = false;
                     this.hero.body.gravity.y = gameOptions.gameGravity;
