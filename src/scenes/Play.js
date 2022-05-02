@@ -10,9 +10,8 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('hero', './assets/player1.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
         this.load.image("window", "./assets/window.png");
         this.load.spritesheet("greenSound", "./assets/goodSound.png", {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 4});
-        this.load.spritesheet("wind", "./assets/wind.png", {frameWidth: 100, frameHeight: 100, startFrame: 0, endFrame: 100});
-        
-
+        this.load.spritesheet("wind", "./assets/wind.png", {frameWidth: 100, frameHeight: 100, startFrame: 0, endFrame: 13});
+        this.load.image("bomb", "./assets/ball2.png");
     }
     create() {
 
@@ -28,6 +27,9 @@ class Play extends Phaser.Scene {
         // sound group
         this.goodSoundGroup = this.physics.add.group();
 
+        // bad item group
+        this.badGroup = this.physics.add.group();
+
         // add the hero
         this.hero = this.physics.add.sprite(game.config.width / 2, game.config.height - 90, "hero");
         // hero animation
@@ -39,7 +41,10 @@ class Play extends Phaser.Scene {
         // is hero floating?
         this.hero.floating = false;
 
-        this.heroScore = 0;
+        // we are waiting for player first move
+        this.firstMove = true;
+
+        this.heroScore = 500;
 
         let scoreConfig = {
             fontFamily: 'Courier',
@@ -55,12 +60,22 @@ class Play extends Phaser.Scene {
         }
         this.scoreConfig = scoreConfig;
 
-        // Update score after 5 sceonds of gameplat
+        // Update score 
         this.scoreUpdateTimer = this.time.addEvent({
-            delay: 5 * 1000,
+            paused: true,
+            delay: 100,
             loop: true,
             callback: () => {
-                this.heroScore += 5;
+                this.heroScore -= 1;
+            }
+        });
+
+        // Accelerate platforms every 5 seconds
+        this.platformUpdate = this.time.addEvent({
+            paused: true,
+            delay: 5000,
+            loop: true,
+            callback: () => {
                 gameOptions.platformSpeed += gameOptions.platformAcceleration;
                 this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
                 this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
@@ -84,7 +99,7 @@ class Play extends Phaser.Scene {
         });
         this.anims.create({
             key: 'wind',
-            frames: this.anims.generateFrameNumbers("wind", {start: 0, end: 100, first: 0}),
+            frames: this.anims.generateFrameNumbers("wind", {start: 0, end: 13, first: 0}),
             frameRate: 12,
             repeat: -1
         });
@@ -112,9 +127,6 @@ class Play extends Phaser.Scene {
             this.moveHero(this.hero);
             this.hero.anims.play('jumping');
         }, this);
-
-        // we are waiting for player first move
-        this.firstMove = true;
     }
 
     // method to return a random value between index 0 and 1 of a giver array
@@ -132,8 +144,6 @@ class Play extends Phaser.Scene {
         } else {
             this.hero.setVelocityX(0);
         }
-        // set hero velocity according to input horizontal coordinate
-        //this.hero.setVelocityX(gameOptions.heroSpeed * ((e.x > game.config.width / 2) ? 1 : -1));
 
         if(this.hero.body.touching.down) {
             this.hero.setVelocityY(gameOptions.heroJump);
@@ -145,6 +155,7 @@ class Play extends Phaser.Scene {
             this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
             this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
             this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
+            this.badGroup.setVelocityY(-gameOptions.platformSpeed);
         }
     }
 
@@ -196,7 +207,7 @@ class Play extends Phaser.Scene {
             }
             boom.setImmovable(true);
         }
-        if (this.randomValue(gameOptions.powerUpChance) == 1) {
+        if (this.randomValue(gameOptions.powerUpChance) == 2) {
             let blow = this.physics.add.sprite(platform.x + (65 * platformToggle), 0, "wind").setOrigin(0.0);
             this.goodSoundGroup.add(blow);
             blow.anims.play('wind');
@@ -208,12 +219,24 @@ class Play extends Phaser.Scene {
             }
             blow.setImmovable(true);
         }
+
+        if (this.randomValue(gameOptions.badItemChance) == 3 && this.firstMove == false) {
+            let bomb = this.physics.add.sprite(game.config.width / 2, 0, "bomb").setOrigin(0.0);
+            this.badGroup.add(bomb);
+            bomb.setImmovable(true);
+            bomb.setVelocityY(-gameOptions.platformSpeed * 6);
+        }
     }
 
     update(){
 
         this.cloud.tilePositionY -= 2;
         this.scoreDisplay.text = this.heroScore;
+
+        if (this.firstMove == false) {
+            this.scoreUpdateTimer.paused = false;
+            this.platformUpdate.paused = false;
+        }
         
         if (this.hero.floating == false) {
             this.physics.world.collide(this.goodSoundGroup, this.hero, () => {
@@ -224,10 +247,17 @@ class Play extends Phaser.Scene {
                 this.time.delayedCall(2000, () => {
                     this.hero.floating = false;
                     this.hero.body.gravity.y = gameOptions.gameGravity;
+                    this.physics.world.collide(this.platformGroup, this.hero);
                     this.hero.setVelocityY(0);
                 }, null, this);
             });
         }
+
+        this.physics.world.collide(this.badGroup, this.hero, () => {
+            this.hero.floating = true;
+            this.stopHero(this.hero);
+            this.hero.setVelocityY(gameOptions.gameGravity / 2);
+        });
 
 
         // right and left movement for player
@@ -242,7 +272,7 @@ class Play extends Phaser.Scene {
         // handle collision between player and platforms
         if (this.hero.floating == false) {
             this.physics.world.collide(this.platformGroup, this.hero);
-        }   
+        }
     
         this.windowGroup.getChildren().forEach(function(window) {
             if (window.getBounds().top > game.config.height && window.active) {
@@ -250,14 +280,11 @@ class Play extends Phaser.Scene {
             }
         });
 
-        // loop through all platforms
+        // recyle platforms and windows
         this.platformGroup.getChildren().forEach(function(platform) {
-            // if a platform leaves the stage to the upper side...
             if(platform.getBounds().top > game.config.height) {
                 let window = this.windowGroup.getFirstDead(true, 100, 100, "window", 0, true);
                 window.active = true;
-                //let window = this.physics.add.sprite(0, 0, "window");
-                // ... recycle the platform
                 this.positionPlatform(platform, window);
                 platform.y = -1; // platforms spawn at the top
                 window.y = platform.y - 56;
@@ -271,32 +298,44 @@ class Play extends Phaser.Scene {
         }
 
         // Game camera follow player
-        if(this.hero.y < game.config.height/20) {
+        if(this.hero.y < game.config.height/20 && this.hero.floating == false) {
             this.hero.body.gravity.y = gameOptions.gameGravity * 5;
         }
-        if(this.hero.y < game.config.height / 6) {
-            this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 2);
-            this.windowGroup.setVelocityY(-gameOptions.platformSpeed* 2);
-            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed* 2);
-            this.hero.body.gravity.y = gameOptions.gameGravity * 1.5;
-        } else if(this.hero.y < game.config.height / 5){
-            this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
-            this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
-            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
-            this.hero.body.gravity.y = gameOptions.gameGravity * 1.2;
-        } else if(this.hero.y < game.config.height / 4) {
-            this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
-            this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
-            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
-            this.hero.body.gravity.y = gameOptions.gameGravity * 1.1;
-        } else if(this.hero.y < game.config.height / 3) {
-            this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
-            this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
-            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
-        } else {
-            this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
-            this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
-            this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
+        // does not go out of the camera
+        if (this.hero.y <= 0) {
+            this.hero.setVelocityY(0);
         }
+        if (this.firstMove == false) {
+            if(this.hero.y < game.config.height / 6) {
+                this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 2);
+                this.windowGroup.setVelocityY(-gameOptions.platformSpeed* 2);
+                this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed* 2);
+                if (this.hero.floating == false) {
+                    this.hero.body.gravity.y = gameOptions.gameGravity * 1.5;
+                }
+            } else if(this.hero.y < game.config.height / 5){
+                this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
+                this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
+                this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.5);
+                if (this.hero.floating == false) {
+                    this.hero.body.gravity.y = gameOptions.gameGravity * 1.2;
+                }
+            } else if(this.hero.y < game.config.height / 4) {
+                this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
+                this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
+                this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.25);
+                if (this.hero.floating == false) {
+                    this.hero.body.gravity.y = gameOptions.gameGravity * 1.1;
+                }
+            } else if(this.hero.y < game.config.height / 3) {
+                this.platformGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
+                this.windowGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
+                this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed * 1.1);
+            } else {
+                this.platformGroup.setVelocityY(-gameOptions.platformSpeed);
+                this.windowGroup.setVelocityY(-gameOptions.platformSpeed);
+                this.goodSoundGroup.setVelocityY(-gameOptions.platformSpeed);
+            }
+        }   
     }
 }
