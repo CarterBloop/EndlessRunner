@@ -12,6 +12,8 @@ class Play extends Phaser.Scene {
         this.load.spritesheet("greenSound", "./assets/goodSound.png", {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 4});
         this.load.spritesheet("wind", "./assets/wind.png", {frameWidth: 100, frameHeight: 100, startFrame: 0, endFrame: 13});
         this.load.image("bomb", "./assets/ball2.png");
+        this.load.audio('jump', ["./assets/Jump.wav"]);
+        this.load.audio('boost', ["./assets/Boost.wav"]);
     }
     create() {
 
@@ -127,6 +129,9 @@ class Play extends Phaser.Scene {
             this.moveHero(this.hero);
             this.hero.anims.play('jumping');
         }, this);
+
+        this.jump = this.sound.add('jump', { loop: false });
+        this.boost = this.sound.add('boost', { loop: false });
     }
 
     // method to return a random value between index 0 and 1 of a giver array
@@ -146,6 +151,7 @@ class Play extends Phaser.Scene {
         }
 
         if(this.hero.body.touching.down) {
+            this.jump.play();
             this.hero.setVelocityY(gameOptions.heroJump);
         }
         
