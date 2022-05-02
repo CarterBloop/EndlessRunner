@@ -142,7 +142,8 @@ class Play extends Phaser.Scene {
         this.jump = this.sound.add('jump', { loop: false });
         this.boost = this.sound.add('boost', { loop: false });
         this.background = this.sound.add('background', { loop: true });
-        this.background.play();
+            this.background.play();
+            this.background.setLoop(true);
     }
 
     // method to return a random value between index 0 and 1 of a giver array
