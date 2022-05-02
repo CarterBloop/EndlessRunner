@@ -293,8 +293,11 @@ class Play extends Phaser.Scene {
         // right and left movement for player
         if (keyLEFT.isDown && this.hero.x >= 0) {
             this.hero.setVelocityX(-gameOptions.heroSpeed);
+            this.hero.flipX=false;
         } else if (keyRIGHT.isDown && this.hero.x <= game.config.width) {
             this.hero.setVelocityX(gameOptions.heroSpeed);
+            this.hero.flipX=true;
+
         } else {
             this.stopHero(this.hero);
         }
