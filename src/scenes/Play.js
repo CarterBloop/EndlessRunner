@@ -243,7 +243,7 @@ class Play extends Phaser.Scene {
             let bomb = this.physics.add.sprite(game.config.width / 2, 0, "bomb").setOrigin(0.0);
             this.badGroup.add(bomb);
             bomb.setImmovable(true);
-            bomb.setVelocityY(-gameOptions.platformSpeed * 6);
+            bomb.setVelocityY(-gameOptions.platformSpeed * 3);
         }
     }
 

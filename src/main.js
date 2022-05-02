@@ -31,7 +31,7 @@ let gameOptions = {
     platformSpeed: -80,
 
     // platform acceleration
-    platformAcceleration: -1,
+    platformAcceleration: -5,
 
     // platform length range, in pixels
     platformLengthRange: [60, 120],
