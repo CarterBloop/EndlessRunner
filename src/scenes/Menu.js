@@ -6,6 +6,8 @@ class Menu extends Phaser.Scene {
     preload() {
       // load audio/background
       this.load.image('background', './assets/sky.png');
+      //background inspired by Trixie, can be found on twitter @Trixelized. I had her assets before i realized we couldnt use them then chaged it.
+      
     }
 
     create() {
@@ -23,7 +25,8 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
         // show menu text
-        this.add.image(450, 150, 'background');
+        this.background=this.add.image(250, 250, 'background');
+        this.background.setScale(1.9);
         this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'WELCOME TO THE LOUD QUIET', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2, 'Use <- or -> to control player movement left and right', menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Use SPACE KEY to control player jump', menuConfig).setOrigin(0.5);
